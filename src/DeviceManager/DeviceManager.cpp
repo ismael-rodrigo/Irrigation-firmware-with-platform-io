@@ -39,6 +39,7 @@ void DeviceManager::rtc_init()
   for (int x; x < _lengh_devices + 1 ; x++){
     //_devices[x].next_active = rtc.now() + TimeSpan(0, _devices[x].delay_automatic_active, 0, 0);
     _devices[x].next_active = rtc.now() + TimeSpan(0, 0, 0, _devices[x].delay_automatic_active);
+    _devices[x].last_active = false;
   };
 
   
@@ -76,10 +77,10 @@ void DeviceManager::devices_init()
 }
 
 
-bool flag_changed;
+
 bool first_update = true ;
 bool buttons_state;
-
+      
 bool state_action_btn;
 bool state_rigth_btn;
 bool state_left_btn;
@@ -92,31 +93,23 @@ bool DeviceManager::is_changed()
     return true;
   }
   buttons_state = state_action_btn | state_rigth_btn | state_left_btn | state_long_pressed_action_btn ;
-
   if(buttons_state && !flag_changed){
-    flag_changed = 1;
     return true;
   }
-  if(!buttons_state && flag_changed){
+  if(flag_changed){
     flag_changed = 0;
-    return false;
+    return true;
   }
   return false;
 }
 
 
-
-
 void DeviceManager::updateSettingsDevice(int device_id)
 {
   _devices[device_id].next_active = rtc.now() + TimeSpan(0, 0, 0, _devices[device_id].delay_automatic_active);
-
   EEPROM.update(((device_id+1)*10) + 1 , _devices[device_id].delay_automatic_active );
-
   EEPROM.update(((device_id+1)*10) + 2 , _devices[device_id].opening_hours );
- 
   EEPROM.update(((device_id+1)*10) + 3 , _devices[device_id].flow_rate_sec ); //in sec
-  
   EEPROM.update(((device_id+1)*10) + 4 , _devices[device_id].flow_rate );
 }
 
@@ -147,15 +140,11 @@ void DeviceManager::verify_is_active()
         _devices[x].last_active = rtc.now();
         _devices[x].next_active = rtc.now() + TimeSpan(0, 0, 0, _devices[x].delay_automatic_active);
         digitalWrite(_devices[x].device_pin , LOW);
+        flag_changed = true;
       }
     }
-
-    
   }
-
 }
-
-
 
 
 
@@ -168,7 +157,6 @@ void DeviceManager::handler(Button* action_button,Button* rigth_button , Button*
   state_left_btn   = left_button->isClicked();
 
   if(DeviceManager::is_changed()){
-
     DeviceManager::view(
       state_long_pressed_action_btn,
       state_action_btn,
@@ -176,23 +164,7 @@ void DeviceManager::handler(Button* action_button,Button* rigth_button , Button*
       state_left_btn);
   }
 
-
   DeviceManager::verify_timers_and_update();
   DeviceManager::verify_is_active();
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

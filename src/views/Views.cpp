@@ -77,21 +77,29 @@ void DeviceManager::devices_view(){
   lcd.print(_devices[device_id].device_name);
   lcd.setCursor(0, 1);
 
+
   if(flag_last_or_now_show){
+    
     lcd.print("prox:");
     lcd.print(_devices[device_id].next_active.day());
     lcd.print(" as ");
     lcd.print(_devices[device_id].next_active.hour());
     lcd.print(":");
     lcd.print(_devices[device_id].next_active.minute());
+  
   }
   else {
+    if(_devices[device_id].last_active.isValid()){
     lcd.print("ult:");
     lcd.print(_devices[device_id].last_active.day());
     lcd.print(" as ");
     lcd.print(_devices[device_id].last_active.hour());
     lcd.print(":");
     lcd.print(_devices[device_id].last_active.minute());
+    }
+    else{
+      lcd.print("Aguardando...");
+    }
   }
 
 
@@ -162,7 +170,6 @@ void DeviceManager::config_device_view(bool active_button)
 
     lcd.setCursor(0, 0);
     lcd.print("Tempo ativado   "); 
-
     if(_devices[device_id].flow_rate == 10 | _devices[device_id].flow_rate == 30){
       lcd.setCursor(0, 1);
       lcd.print("Segundos(s): ");
@@ -171,9 +178,10 @@ void DeviceManager::config_device_view(bool active_button)
       lcd.setCursor(0, 1);
       lcd.print("Minuto(s): ");
     }
-
     lcd.print(_devices[device_id].flow_rate ); 
       
+
+
     break;
 
 

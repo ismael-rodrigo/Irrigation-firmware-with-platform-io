@@ -74,7 +74,7 @@ class DeviceManager
     String _MENU;
     int _DEVICE_SELECTED;
     bool _flag_active_message = false ;
-    
+    bool flag_changed;
 
 
 };
