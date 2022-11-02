@@ -7,19 +7,13 @@
 
 
 
-DeviceManager::DeviceManager(struct Device devices[]):
-lcd(0x27,16,2)
-
+DeviceManager::DeviceManager(Device* devices):
+lcd(0x27,16,2),
+_devices(devices)
 {
   for (int x; x < sizeof(devices)+1 ; x++){
-    _devices[x].device_name = devices[x].device_name;
-    _devices[x].device_pin = devices[x].device_pin;
-    _devices[x].is_active = false;
     _devices[x].flow_rate = 10;
     _devices[x].flow_rate_sec = 10;
-  
-  
-
     _devices[x].delay_automatic_active = EEPROM.read(((x+1)*10) + 1 );
     _devices[x].opening_hours = EEPROM.read(((x+1)*10) + 2 );
     _devices[x].flow_rate_sec = EEPROM.read(((x+1)*10) + 3 );

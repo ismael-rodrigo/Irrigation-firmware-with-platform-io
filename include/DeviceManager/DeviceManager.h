@@ -36,7 +36,7 @@ class DeviceManager
   public:
     LiquidCrystal_I2C lcd;
     RTC_DS3231 rtc;
-    DeviceManager(struct Device devices[]);
+    DeviceManager(Device* devices);
     
 
     bool is_changed();
@@ -68,7 +68,7 @@ class DeviceManager
   private:
     void verify_timers_and_update();
     
-    Device _devices[10];
+    Device* _devices;
     int _lengh_devices;
 
     String _MENU;

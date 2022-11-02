@@ -26,7 +26,6 @@ DeviceManager device(devices);
 
 void setup() 
 {
-  Serial.begin(9600);
   device.lcd_init();
   device.rtc_init();
   device.devices_init();
