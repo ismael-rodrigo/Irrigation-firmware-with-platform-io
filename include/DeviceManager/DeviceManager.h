@@ -18,7 +18,6 @@ struct Device {
     int opening_hours;   // 0-> full-time // 1-> only-day // 2-> only-night
     
     int flow_rate; // open valve visibly in display
-    int flow_rate_sec; // flow rate seted in timer in seconds
 
     DateTime next_active; // next time for active device
     DateTime last_active;

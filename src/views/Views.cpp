@@ -2,6 +2,9 @@
 #include "DeviceManager/DeviceManager.h"
 #include <LiquidCrystal_I2C.h>
 
+#include "utils/convert_time.h"
+
+
 int device_id = 0;
 
 bool flag_last_or_now_show;
@@ -13,8 +16,8 @@ int index_fibonacci = 0;
 const int fibonacci[8]  = {0,1, 2, 3, 5, 8, 13, 21 };
 
 int index_flow_rate = 0;
-                     //SECONDS  //MINUTES         
-int flow_rates[9] = {10 , 30 , 1 ,2 ,3 ,5 ,8 ,13 , 21};
+                     //SECONDS   //MINUTES            // HOURS  
+int flow_rates[8] = {20 , 40    , 2*60 , 5*60  , 10*60   ,3*3600 ,6*3600 ,8*3600   };
 
 int mode = 0; 
 
@@ -158,7 +161,7 @@ void DeviceManager::config_device_view(bool active_button)
     case 1:
 
     if(active_button) {
-      if(index_flow_rate >=  8){
+      if(index_flow_rate >=  7){
         index_flow_rate = 0 ;
         _devices[device_id].flow_rate = flow_rates[index_flow_rate] ; 
       }
@@ -170,19 +173,28 @@ void DeviceManager::config_device_view(bool active_button)
 
     lcd.setCursor(0, 0);
     lcd.print("Tempo ativado   "); 
-    if(_devices[device_id].flow_rate == 10 | _devices[device_id].flow_rate == 30){
+
+
+    if(is_hour(_devices[device_id].flow_rate)) {
       lcd.setCursor(0, 1);
-      lcd.print("Segundos(s): ");
+      lcd.print("Hora(s): ");
+      lcd.print(seconds_to_hour(_devices[device_id].flow_rate) ); 
+      break;
     }
-    else {
+
+    if(is_minute(_devices[device_id].flow_rate)){
       lcd.setCursor(0, 1);
-      lcd.print("Minuto(s): ");
+      lcd.print("Minutos(s): ");
+      lcd.print(seconds_to_minute(_devices[device_id].flow_rate) ); 
+      break;
     }
+
+    lcd.setCursor(0, 1);
+    lcd.print("Segundos(s): ");
     lcd.print(_devices[device_id].flow_rate ); 
-      
-
-
     break;
+    
+
 
 
    // CONFIG PAGE --> MODE OPERATION
